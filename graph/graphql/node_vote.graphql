@@ -1,0 +1,36 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+
+type NodeVote {
+  id: ID!
+  userId: String!
+  nodeId: String!
+  nodeUserId: String!
+  value: Any!
+
+  user: User!
+  owner: User!
+  
+  createdAt:Time!
+  updatedAt:Time!
+}
+
+input FetchNodeVote {
+  id: ID
+  userId: String
+  nodeId: String
+  nodeUserId: String
+}
+
+type PaginationNodeVote {
+  total: Int,
+  limit: Int,
+  skip: Int,
+  data: [NodeVote]
+}
+
+extend type Query {
+  nodevotes(limit: Int = 10, skip:Int = 0, input:FetchNodeVote): PaginationNodeVote
+}

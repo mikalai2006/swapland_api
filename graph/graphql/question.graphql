@@ -1,0 +1,36 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+
+type Question {
+  id: ID!
+  userId: String!
+  productId: String!
+  question: String!
+  answer: String!
+  status: Int!
+
+  user: User!
+
+  createdAt:Time!
+  updatedAt:Time!
+}
+
+input FetchQuestion {
+  id: ID
+  userId: String
+  productId: String
+}
+
+type PaginationQuestion {
+  total: Int,
+  limit: Int,
+  skip: Int,
+  data: [Question]
+}
+
+extend type Query {
+  questions(first: Int = 20, after: ID, limit: Int=10, skip:Int=0, input:FetchQuestion): PaginationQuestion
+  question(input:FetchQuestion): Question
+}

@@ -1,0 +1,30 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+type Message {
+  id: ID!
+  userId: String!
+  message: String!
+  status: Int!
+  props: Any!
+  createdAt:Time!
+  updatedAt:Time!
+}
+
+type PaginationMessage {
+  total: Int,
+  limit: Int,
+  skip: Int,
+  data: [Message]
+}
+
+input ParamsMessage {
+  id: ID
+	status: Int
+	userId: String
+}
+
+extend type Query {
+  messages(limit: Int, skip:Int=0, input: ParamsMessage): PaginationMessage
+  message(id: ID): Message
+}

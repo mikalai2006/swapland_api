@@ -1,0 +1,11 @@
+.env
+*.env
+/postgres-db
+/migrations
+/migrator
+/help
+/tmp
+/gin-bin
+/public/*/*.*
+/public/
+coverage.out

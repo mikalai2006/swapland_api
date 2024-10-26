@@ -1,0 +1,67 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+type Product {
+  id: ID!
+  userId: String!
+  title: String!
+  description: String!
+  # data: [Nodedata]
+  images: [Image]
+  categoryId: String!
+  props: Any!
+  user: User
+  status: Int!
+  actions: [Int]
+  cost: Int!
+
+  offers: [Offer]
+
+  createdAt:Time!
+  updatedAt:Time!
+}
+
+type PaginationProduct {
+  total: Int,
+  limit: Int,
+  skip: Int,
+  data: [Product]
+}
+
+type PageInfo {
+  startCursor: ID!
+  endCursor: ID!
+  hasNextPage: Boolean
+}
+
+# input ProductFilterCategoryOption {
+# 	tagId: String!
+# 	value: [Any]
+# }
+# input ProductFilterTag {
+#   type: String!
+#   options: [ProductFilterTagOption]!
+# }
+
+input SortParams {
+  key: String
+  value: Int
+}
+
+input ParamsProduct {
+  id: ID
+  query:String,
+  categoryId: [String]
+  userId: String
+  cost: Int
+  actions: [Int]
+  sort: [SortParams]
+  # type:[String],
+  # filter: JSON
+  # filter: [ProductFilterTag]
+}
+
+extend type Query {
+  products(limit: Int, skip:Int=0, input: ParamsProduct): PaginationProduct @auth
+  product(id: ID): Product @auth
+}

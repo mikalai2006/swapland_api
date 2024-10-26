@@ -1,0 +1,19 @@
+
+type StatNode {
+  groupCountry: [GroupNodeCountry]
+  groupType: [GroupNodeType]
+}
+
+type GroupNodeCountry {
+  id: String
+	count: Int
+}
+type GroupNodeType {
+  id: String
+	count: Int
+}
+
+
+extend type Query {
+  statNode: StatNode
+}

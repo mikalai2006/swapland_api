@@ -1,0 +1,35 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+
+type Subscribe {
+  id: ID!
+  userId: String!
+  subUserId: String!
+  status: Int!
+
+  user: User
+  subUser: User
+
+  createdAt:Time!
+  updatedAt:Time!
+}
+
+input FetchSubscribe {
+  id: ID
+  userId: String
+  subUserId: String
+}
+
+type PaginationSubscribe {
+  total: Int,
+  limit: Int,
+  skip: Int,
+  data: [Subscribe]
+}
+
+extend type Query {
+  subscribes(first: Int = 20, after: ID, limit: Int=10, skip:Int=0, input:FetchSubscribe): PaginationSubscribe
+  subscribe(input:FetchSubscribe): Subscribe
+}

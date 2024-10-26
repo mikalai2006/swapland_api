@@ -1,0 +1,34 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+
+type Address {
+  id: ID!
+  userId: String!
+  osmId: String!
+  address: Any!
+  dAddress: String!
+  props: Any!
+
+  createdAt:Time!
+  updatedAt:Time!
+}
+
+input FetchAddress {
+  id: ID
+  userId: String
+  osmId: String
+}
+
+type PaginationAddress {
+  total: Int,
+  limit: Int,
+  skip: Int,
+  data: [Address]
+}
+
+extend type Query {
+  addresses(first: Int = 20, after: ID, limit: Int=10, skip:Int=0, input:FetchAddress): PaginationAddress
+  address(id:ID): Address
+}

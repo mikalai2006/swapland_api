@@ -1,0 +1,46 @@
+type Review {
+  id: ID!
+  userId: String!
+  nodeId: String!
+
+  review: String!
+  rate: Int!
+  user: User
+
+  createdAt:Time!
+  updatedAt:Time!
+}
+
+type ReviewInfo {
+  count: Int
+  value: Int
+  ratings: Any
+}
+
+input FetchReview {
+  id: ID
+  userId: String
+  nodeId: String
+}
+
+type PaginationReview {
+  total: Int,
+  limit: Int,
+  skip: Int,
+  data: [Review]
+}
+
+type ReviewEdge {
+  cursor: ID!
+  node: Review
+}
+
+type ReviewsConnection {
+  edges: [ReviewEdge!]!
+  pageInfo: PageInfo!
+}
+
+extend type Query {
+  reviewsConnection(first: Int = 20, after: ID, limit: Int=10, skip:Int=0, input:FetchReview): ReviewsConnection
+  review(input:FetchReview): Review
+}

@@ -1,0 +1,50 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+
+type UserStat {
+  addProduct: Int!
+  takeProduct: Int!
+  addOffer: Int!
+	takeOffer: Int!
+	addMessage: Int!
+	takeMessage: Int!
+	addReview: Int!
+	takeReview: Int!
+	warning: Int!
+	request: Int!
+	lastRequest: Time
+}
+
+type GeoLocation {
+  lon: Float!
+  lat: Float!
+	osmId: String
+	address: Any
+}
+
+type User {
+  id: ID!
+  userId: String!
+  name: String!
+  login: String!
+  lang: String!
+  online: Boolean!
+  verify: Boolean!
+  lastTime: Time
+
+  userStat: UserStat!
+  location: GeoLocation
+
+  images: [Image]!
+  roles: [String]!
+  md: Int!
+
+  createdAt:Time!
+  updatedAt:Time!
+}
+
+extend type Query {
+  user(id: ID): User
+}

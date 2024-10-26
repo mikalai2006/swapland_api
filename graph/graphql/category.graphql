@@ -1,0 +1,38 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+
+type Category {
+  id: ID!
+  userId: String!
+  seo: String!
+  title: String!
+  description: String!
+  props: Any!
+  parent: String!
+
+  status: Int!
+  createdAt:Time!
+  updatedAt:Time!
+}
+
+input FetchCategory {
+  id: ID
+  userId: String
+  seo: String
+  parent: String
+  status: Int
+}
+
+type PaginationCategory {
+  total: Int,
+  limit: Int,
+  skip: Int,
+  data: [Category]
+}
+
+extend type Query {
+  categories(limit: Int=10, skip:Int=0, input:FetchCategory): PaginationCategory
+  category(id:ID): Category
+}

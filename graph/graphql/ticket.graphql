@@ -1,0 +1,59 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+
+type Ticket {
+  id: ID!
+  userId: String!
+  title: String!
+  messages: [TicketMessage]
+  progress: Int,
+  status: Int
+
+  user: User
+  
+  createdAt:Time!
+  updatedAt:Time!
+}
+
+type TicketMessage {
+  id: ID!
+  userId: String!
+  ticketId: String!
+  text: String!
+  status: Int!
+  
+  images: [Image]
+  user: User
+
+  createdAt: String!
+  updatedAt: String!
+}
+
+input ParamsTicket {
+  id: ID
+  userId: String,
+}
+
+type PaginationTicket {
+  total: Int,
+  limit: Int,
+  skip: Int,
+  data: [Ticket]
+}
+
+# type TagEdge {
+#   cursor: ID!
+#   node: Tag
+# }
+
+# type TagsConnection {
+#   edges: [TagEdge!]!
+#   pageInfo: PageInfo!
+# }
+
+extend type Query {
+  tickets(limit: Int=10, skip:Int=0, input:ParamsTicket): PaginationTicket
+  ticket(input:ParamsTicket): Ticket
+}
