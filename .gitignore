@@ -9,4 +9,4 @@
 /public/*/*.*
 /public/
 coverage.out
-main.exe
+*.exe
