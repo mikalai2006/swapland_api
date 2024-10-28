@@ -172,6 +172,7 @@ func (r *MessageRoomMongo) CreateMessageRoom(userID string, messageRoom *model.M
 		UserID:     userIDPrimitive,
 		ProductID:  messageRoom.ProductID,
 		TakeUserID: messageRoom.TakeUserID,
+		OfferID:    messageRoom.OfferID,
 		Status:     &statusDefault,
 		Props:      messageRoom.Props,
 		CreatedAt:  createdAt,

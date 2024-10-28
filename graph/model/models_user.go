@@ -12,6 +12,11 @@ type GeoLocation struct {
 	OsmID   string                 `json:"osmId" bson:"osm_id"`
 	Address map[string]interface{} `json:"address" bson:"address"`
 }
+type GeoCoordinates struct {
+	Lon *float64 `json:"lon" bson:"lon"`
+	Lat *float64 `json:"lat" bson:"lat"`
+	// ID  *string  `json:"id" bson:"id"`
+}
 
 type UserStat struct {
 	AddProduct  int64 `json:"addProduct" bson:"addProduct"`

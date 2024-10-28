@@ -19,11 +19,13 @@ type Product struct {
 	Actions     []int                  `json:"actions" bson:"actions" form:"actions"`
 	Lon         float64                `json:"lon" bson:"lon"`
 	Lat         float64                `json:"lat" bson:"lat"`
+	AddressId   primitive.ObjectID     `json:"addressId" bson:"addressId"`
 
 	// Data   []Nodedata `json:"data" bson:"data,omitempty"`
-	Images []Image `json:"images" bson:"images,omitempty"`
-	User   User    `json:"user" bson:"user,omitempty"`
-	Offers []Offer `json:"offers" bson:"offers,omitempty"`
+	Images  []Image `json:"images" bson:"images,omitempty"`
+	Address Address `json:"address" bson:"address,omitempty"`
+	User    User    `json:"user" bson:"user,omitempty"`
+	Offers  []Offer `json:"offers" bson:"offers,omitempty"`
 
 	CreatedAt time.Time `json:"createdAt" bson:"created_at"`
 	UpdatedAt time.Time `json:"updatedAt" bson:"updated_at"`
@@ -38,8 +40,9 @@ type ProductInputData struct {
 	Status      int64                  `json:"status" bson:"status" form:"status"`
 	Cost        *int64                 `json:"cost" bson:"cost" form:"cost"`
 	Actions     []int                  `json:"actions" bson:"actions" form:"actions"`
-	Lon         float64                `json:"lon" bson:"lon"`
-	Lat         float64                `json:"lat" bson:"lat"`
+	Lon         float64                `json:"lon" bson:"lon" form:"lon"`
+	Lat         float64                `json:"lat" bson:"lat" form:"lat"`
+	AddressId   string                 `json:"addressId" bson:"addressId" form:"addressId"`
 
 	CreatedAt time.Time `json:"createdAt" bson:"created_at"`
 	UpdatedAt time.Time `json:"updatedAt" bson:"updated_at"`
@@ -55,6 +58,7 @@ type ProductFilter struct {
 	Actions    []*int                     `json:"actions,omitempty"`
 	Lon        float64                    `json:"lon" bson:"lon"`
 	Lat        float64                    `json:"lat" bson:"lat"`
+	AddressId  *string                    `json:"addressId" bson:"addressId"`
 	Sort       []*ProductFilterSortParams `json:"sort,omitempty"`
 	Limit      *int                       `json:"limit,omitempty"`
 	Skip       *int                       `json:"skip,omitempty"`
@@ -76,6 +80,7 @@ type ProductInput struct {
 	Actions     []int                  `json:"actions" bson:"actions"`
 	Lon         float64                `json:"lon" bson:"lon"`
 	Lat         float64                `json:"lat" bson:"lat"`
+	AddressId   primitive.ObjectID     `json:"addressId" bson:"addressId"`
 
 	CreatedAt time.Time `json:"createdAt" bson:"created_at"`
 	UpdatedAt time.Time `json:"updatedAt" bson:"updated_at"`

@@ -16,21 +16,21 @@ func NewAddressService(repo repository.Address, i18n config.I18nConfig) *Address
 	return &AddressService{repo: repo, i18n: i18n}
 }
 
-func (s *AddressService) CreateAddress(userID string, address *domain.AddressInput) (*domain.Address, error) {
+func (s *AddressService) CreateAddress(userID string, address domain.ResponseNominatim) (*model.Address, error) {
 	return s.repo.CreateAddress(userID, address)
 }
 
-func (s *AddressService) FindAddress(params domain.RequestParams) (domain.Response[domain.Address], error) {
-	return s.repo.FindAddress(params)
+func (s *AddressService) FindAddress(input *model.AddressFilter) (domain.Response[model.Address], error) {
+	return s.repo.FindAddress(input)
 }
 
-func (s *AddressService) GetAllAddress(params domain.RequestParams) (domain.Response[domain.Address], error) {
-	return s.repo.GetAllAddress(params)
-}
-
-// func (s *AddressService) UpdateAddress(id string, data interface{}) (domain.Address, error) {
-// 	return s.repo.UpdateAddress(id, data)
+// func (s *AddressService) GetAllAddress(params domain.RequestParams) (domain.Response[model.Address], error) {
+// 	return s.repo.GetAllAddress(params)
 // }
+
+func (s *AddressService) UpdateAddress(id string, userID string, data domain.ResponseNominatim) (*model.Address, error) {
+	return s.repo.UpdateAddress(id, userID, data)
+}
 
 func (s *AddressService) DeleteAddress(id string) (model.Address, error) {
 	return s.repo.DeleteAddress(id)

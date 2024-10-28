@@ -11,12 +11,6 @@ type FetchAction struct {
 	Status    *int    `json:"status,omitempty"`
 }
 
-type FetchAddress struct {
-	ID     *string `json:"id,omitempty"`
-	UserID *string `json:"userId,omitempty"`
-	OsmID  *string `json:"osmId,omitempty"`
-}
-
 type FetchCategory struct {
 	ID     *string `json:"id,omitempty"`
 	UserID *string `json:"userId,omitempty"`
@@ -79,13 +73,6 @@ type PaginationAction struct {
 	Limit *int      `json:"limit,omitempty"`
 	Skip  *int      `json:"skip,omitempty"`
 	Data  []*Action `json:"data,omitempty"`
-}
-
-type PaginationAddress struct {
-	Total *int       `json:"total,omitempty"`
-	Limit *int       `json:"limit,omitempty"`
-	Skip  *int       `json:"skip,omitempty"`
-	Data  []*Address `json:"data,omitempty"`
 }
 
 type PaginationCategory struct {

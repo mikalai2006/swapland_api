@@ -118,8 +118,7 @@ func NewLoaders(mongoDB *mongo.Database, repositories *repository.Repositories) 
 	// dataloader.WithWait[string, *model.Address](time.Millisecond)
 	//dataloader.WithCache[string, *model.Tagopt](&dataloader.NoCache[string, *model.Tagopt]{})
 	return &Loaders{
-		AddressLoader: dataloader.NewBatchedLoader(ur.getAddress, dataloader.WithClearCacheOnBatch[string, *model.Address]()),
-		TagsLoader:    dataloader.NewBatchedLoader(ur.getTags, dataloader.WithWait[string, *model.Tag](time.Millisecond)),
+		TagsLoader: dataloader.NewBatchedLoader(ur.getTags, dataloader.WithWait[string, *model.Tag](time.Millisecond)),
 		// TagoptLoader:  dataloader.NewBatchedLoader(ur.getTagopt, dataloader.WithClearCacheOnBatch[string, []*model.Question]()),
 	}
 }

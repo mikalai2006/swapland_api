@@ -17,8 +17,8 @@ type ResponseTokens struct {
 }
 
 type GeneralFieldDB struct {
-	CreatedAt time.Time `json:"created_at" bson:"created_at" form:"created_at"`
-	UpdatedAt time.Time `json:"updated_at" bson:"updated_at" form:"updated_at"`
+	CreatedAt time.Time `json:"createdAt" bson:"createdAt" form:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt" bson:"updatedAt" form:"updatedAt"`
 }
 
 type ErrorResponse struct {
@@ -27,13 +27,15 @@ type ErrorResponse struct {
 }
 
 type ResponseNominatim struct {
+	PlaceId     int                    `json:"place_id" bson:"place_id"`
 	OsmType     string                 `json:"osm_type" bson:"osm_type"`
 	OsmID       int                    `json:"osm_id" bson:"osm_id"`
 	Lat         string                 `json:"lat" bson:"lat"`
 	Lon         string                 `json:"lon" bson:"lon"`
 	Class       string                 `json:"class" bson:"class"`
 	Type        string                 `json:"type" bson:"type"`
-	AddressType string                 `json:"address_type" bson:"address_type"`
+	Lang        string                 `json:"lang" bson:"lang"`
+	AddressType string                 `json:"addresstype" bson:"addresstype"`
 	Name        string                 `json:"name" bson:"name"`
 	DisplayName string                 `json:"display_name" bson:"display_name"`
 	Address     map[string]interface{} `json:"address" bson:"address"`

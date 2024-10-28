@@ -82,6 +82,14 @@ func (r *ProductMongo) FindProduct(params *model.ProductFilter) (domain.Response
 		q = append(q, bson.E{"_id", bson.D{{"$in", params.ProductID}}})
 	}
 
+	if params.AddressId != nil {
+		addressIDPrimitive, err := primitive.ObjectIDFromHex(*params.AddressId)
+		if err != nil {
+			return response, err
+		}
+		q = append(q, bson.E{"addressId", addressIDPrimitive})
+	}
+
 	pipe := mongo.Pipeline{}
 	pipe = append(pipe, bson.D{{"$match", q}})
 
@@ -241,6 +249,17 @@ func (r *ProductMongo) FindProduct(params *model.ProductFilter) (domain.Response
 	}}})
 	pipe = append(pipe, bson.D{{Key: "$set", Value: bson.M{"user": bson.M{"$first": "$userb"}}}})
 
+	pipe = append(pipe, bson.D{{Key: "$lookup", Value: bson.M{
+		"from": "address",
+		"as":   "addressb",
+		"let":  bson.D{{Key: "addressId", Value: "$addressId"}},
+		"pipeline": mongo.Pipeline{
+			bson.D{{Key: "$match", Value: bson.M{"$expr": bson.M{"$eq": [2]string{"$_id", "$$addressId"}}}}},
+			bson.D{{"$limit", 1}},
+		},
+	}}})
+	pipe = append(pipe, bson.D{{Key: "$set", Value: bson.M{"address": bson.M{"$first": "$addressb"}}}})
+
 	limit := 100
 	skip := 0
 	if params.Limit != nil {
@@ -300,6 +319,10 @@ func (r *ProductMongo) CreateProduct(userID string, Product *model.ProductInputD
 	if err != nil {
 		return nil, err
 	}
+	addressIDPrimitive, err := primitive.ObjectIDFromHex(Product.AddressId)
+	if err != nil {
+		return nil, err
+	}
 
 	createdAt := Product.CreatedAt
 	if createdAt.IsZero() {
@@ -314,6 +337,9 @@ func (r *ProductMongo) CreateProduct(userID string, Product *model.ProductInputD
 		Description: Product.Description,
 		Status:      Product.Status,
 		Cost:        Product.Cost,
+		Lon:         Product.Lon,
+		Lat:         Product.Lat,
+		AddressId:   addressIDPrimitive,
 		Actions:     Product.Actions,
 		CreatedAt:   createdAt,
 		UpdatedAt:   time.Now(),
@@ -391,7 +417,7 @@ func (r *ProductMongo) UpdateProduct(id string, userID string, data *model.Produ
 	// if err != nil {
 	// 	return result, err
 	// }
-	fmt.Println(data)
+	// fmt.Println(data)
 	newData := bson.M{}
 	if data.Status != 0 {
 		newData["status"] = data.Status
@@ -407,6 +433,15 @@ func (r *ProductMongo) UpdateProduct(id string, userID string, data *model.Produ
 	}
 	if !data.CategoryID.IsZero() {
 		newData["category_id"] = data.CategoryID
+	}
+	if !data.AddressId.IsZero() {
+		newData["addressId"] = data.AddressId
+	}
+	if data.Lat != 0 {
+		newData["lat"] = data.Lat
+	}
+	if data.Lon != 0 {
+		newData["lon"] = data.Lon
 	}
 	if len(data.Actions) > 0 {
 		newData["actions"] = data.Actions
@@ -425,6 +460,7 @@ func (r *ProductMongo) UpdateProduct(id string, userID string, data *model.Produ
 		newData["props"] = newProps
 	}
 	newData["updated_at"] = time.Now()
+	fmt.Println("Edit product: ", id, newData)
 	// test := model.ProductLike{}
 	// if data.ProductLike != test {
 	// 	newData["Product_like"] = data.ProductLike

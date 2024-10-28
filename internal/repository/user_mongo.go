@@ -416,7 +416,10 @@ func (r *UserMongo) UpdateUser(id string, user *model.User) (model.User, error) 
 	if err != nil {
 		return result, err
 	}
-	result = results.Data[0]
+
+	if len(results.Data) > 0 {
+		result = results.Data[0]
+	}
 
 	return result, nil
 }

@@ -40,7 +40,6 @@ type Config struct {
 
 type ResolverRoot interface {
 	Action() ActionResolver
-	Address() AddressResolver
 	Category() CategoryResolver
 	GeoLocation() GeoLocationResolver
 	Image() ImageResolver
@@ -74,17 +73,6 @@ type ComplexityRoot struct {
 		Type        func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 		UserID      func(childComplexity int) int
-	}
-
-	Address struct {
-		Address   func(childComplexity int) int
-		CreatedAt func(childComplexity int) int
-		DAddress  func(childComplexity int) int
-		ID        func(childComplexity int) int
-		OsmID     func(childComplexity int) int
-		Props     func(childComplexity int) int
-		UpdatedAt func(childComplexity int) int
-		UserID    func(childComplexity int) int
 	}
 
 	Category struct {
@@ -177,13 +165,6 @@ type ComplexityRoot struct {
 	}
 
 	PaginationAction struct {
-		Data  func(childComplexity int) int
-		Limit func(childComplexity int) int
-		Skip  func(childComplexity int) int
-		Total func(childComplexity int) int
-	}
-
-	PaginationAddress struct {
 		Data  func(childComplexity int) int
 		Limit func(childComplexity int) int
 		Skip  func(childComplexity int) int
@@ -287,8 +268,6 @@ type ComplexityRoot struct {
 	Query struct {
 		Action            func(childComplexity int, input *model.FetchImage) int
 		Actions           func(childComplexity int, limit *int, skip *int, input *model.FetchAction) int
-		Address           func(childComplexity int, id *string) int
-		Addresses         func(childComplexity int, first *int, after *string, limit *int, skip *int, input *model.FetchAddress) int
 		Categories        func(childComplexity int, limit *int, skip *int, input *model.FetchCategory) int
 		Category          func(childComplexity int, id *string) int
 		Hello             func(childComplexity int) int
@@ -455,13 +434,6 @@ type ActionResolver interface {
 	CreatedAt(ctx context.Context, obj *model.Action) (string, error)
 	UpdatedAt(ctx context.Context, obj *model.Action) (string, error)
 }
-type AddressResolver interface {
-	ID(ctx context.Context, obj *model.Address) (string, error)
-
-	Address(ctx context.Context, obj *model.Address) (any, error)
-
-	Props(ctx context.Context, obj *model.Address) (any, error)
-}
 type CategoryResolver interface {
 	ID(ctx context.Context, obj *model.Category) (string, error)
 	UserID(ctx context.Context, obj *model.Category) (string, error)
@@ -507,8 +479,6 @@ type QueryResolver interface {
 	Hello(ctx context.Context) (*model.Hello, error)
 	Actions(ctx context.Context, limit *int, skip *int, input *model.FetchAction) (*model.PaginationAction, error)
 	Action(ctx context.Context, input *model.FetchImage) (*model.Action, error)
-	Addresses(ctx context.Context, first *int, after *string, limit *int, skip *int, input *model.FetchAddress) (*model.PaginationAddress, error)
-	Address(ctx context.Context, id *string) (*model.Address, error)
 	Categories(ctx context.Context, limit *int, skip *int, input *model.FetchCategory) (*model.PaginationCategory, error)
 	Category(ctx context.Context, id *string) (*model.Category, error)
 	Images(ctx context.Context, limit *int, skip *int, input *model.FetchImage) (*model.PaginationImage, error)
@@ -659,62 +629,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Action.UserID(childComplexity), true
-
-	case "Address.address":
-		if e.complexity.Address.Address == nil {
-			break
-		}
-
-		return e.complexity.Address.Address(childComplexity), true
-
-	case "Address.createdAt":
-		if e.complexity.Address.CreatedAt == nil {
-			break
-		}
-
-		return e.complexity.Address.CreatedAt(childComplexity), true
-
-	case "Address.dAddress":
-		if e.complexity.Address.DAddress == nil {
-			break
-		}
-
-		return e.complexity.Address.DAddress(childComplexity), true
-
-	case "Address.id":
-		if e.complexity.Address.ID == nil {
-			break
-		}
-
-		return e.complexity.Address.ID(childComplexity), true
-
-	case "Address.osmId":
-		if e.complexity.Address.OsmID == nil {
-			break
-		}
-
-		return e.complexity.Address.OsmID(childComplexity), true
-
-	case "Address.props":
-		if e.complexity.Address.Props == nil {
-			break
-		}
-
-		return e.complexity.Address.Props(childComplexity), true
-
-	case "Address.updatedAt":
-		if e.complexity.Address.UpdatedAt == nil {
-			break
-		}
-
-		return e.complexity.Address.UpdatedAt(childComplexity), true
-
-	case "Address.userId":
-		if e.complexity.Address.UserID == nil {
-			break
-		}
-
-		return e.complexity.Address.UserID(childComplexity), true
 
 	case "Category.createdAt":
 		if e.complexity.Category.CreatedAt == nil {
@@ -1157,34 +1071,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.PaginationAction.Total(childComplexity), true
 
-	case "PaginationAddress.data":
-		if e.complexity.PaginationAddress.Data == nil {
-			break
-		}
-
-		return e.complexity.PaginationAddress.Data(childComplexity), true
-
-	case "PaginationAddress.limit":
-		if e.complexity.PaginationAddress.Limit == nil {
-			break
-		}
-
-		return e.complexity.PaginationAddress.Limit(childComplexity), true
-
-	case "PaginationAddress.skip":
-		if e.complexity.PaginationAddress.Skip == nil {
-			break
-		}
-
-		return e.complexity.PaginationAddress.Skip(childComplexity), true
-
-	case "PaginationAddress.total":
-		if e.complexity.PaginationAddress.Total == nil {
-			break
-		}
-
-		return e.complexity.PaginationAddress.Total(childComplexity), true
-
 	case "PaginationCategory.data":
 		if e.complexity.PaginationCategory.Data == nil {
 			break
@@ -1614,30 +1500,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Actions(childComplexity, args["limit"].(*int), args["skip"].(*int), args["input"].(*model.FetchAction)), true
-
-	case "Query.address":
-		if e.complexity.Query.Address == nil {
-			break
-		}
-
-		args, err := ec.field_Query_address_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.Address(childComplexity, args["id"].(*string)), true
-
-	case "Query.addresses":
-		if e.complexity.Query.Addresses == nil {
-			break
-		}
-
-		args, err := ec.field_Query_addresses_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.Addresses(childComplexity, args["first"].(*int), args["after"].(*string), args["limit"].(*int), args["skip"].(*int), args["input"].(*model.FetchAddress)), true
 
 	case "Query.categories":
 		if e.complexity.Query.Categories == nil {
@@ -2570,7 +2432,6 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputFetchAction,
-		ec.unmarshalInputFetchAddress,
 		ec.unmarshalInputFetchCategory,
 		ec.unmarshalInputFetchImage,
 		ec.unmarshalInputFetchNodeVote,
@@ -2701,41 +2562,6 @@ type PaginationAction {
 extend type Query {
   actions(limit: Int=10, skip:Int=0, input:FetchAction): PaginationAction
   action(input:FetchImage): Action
-}
-`, BuiltIn: false},
-	{Name: "../graphql/address.graphql", Input: `# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
-
-
-type Address {
-  id: ID!
-  userId: String!
-  osmId: String!
-  address: Any!
-  dAddress: String!
-  props: Any!
-
-  createdAt:Time!
-  updatedAt:Time!
-}
-
-input FetchAddress {
-  id: ID
-  userId: String
-  osmId: String
-}
-
-type PaginationAddress {
-  total: Int,
-  limit: Int,
-  skip: Int,
-  data: [Address]
-}
-
-extend type Query {
-  addresses(first: Int = 20, after: ID, limit: Int=10, skip:Int=0, input:FetchAddress): PaginationAddress
-  address(id:ID): Address
 }
 `, BuiltIn: false},
 	{Name: "../graphql/category.graphql", Input: `# GraphQL schema example
@@ -3409,72 +3235,6 @@ func (ec *executionContext) field_Query_actions_args(ctx context.Context, rawArg
 		}
 	}
 	args["input"] = arg2
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_address_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 *string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_addresses_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 *int
-	if tmp, ok := rawArgs["first"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("first"))
-		arg0, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["first"] = arg0
-	var arg1 *string
-	if tmp, ok := rawArgs["after"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("after"))
-		arg1, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["after"] = arg1
-	var arg2 *int
-	if tmp, ok := rawArgs["limit"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
-		arg2, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["limit"] = arg2
-	var arg3 *int
-	if tmp, ok := rawArgs["skip"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("skip"))
-		arg3, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["skip"] = arg3
-	var arg4 *model.FetchAddress
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg4, err = ec.unmarshalOFetchAddress2ᚖgithubᚗcomᚋmikalai2006ᚋswaplandᚑapiᚋgraphᚋmodelᚐFetchAddress(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg4
 	return args, nil
 }
 
@@ -4551,358 +4311,6 @@ func (ec *executionContext) fieldContext_Action_updatedAt(_ context.Context, fie
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Address_id(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Address_id(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Address().ID(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Address_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Address",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Address_userId(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Address_userId(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.UserID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Address_userId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Address",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Address_osmId(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Address_osmId(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.OsmID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Address_osmId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Address",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Address_address(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Address_address(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Address().Address(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(any)
-	fc.Result = res
-	return ec.marshalNAny2interface(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Address_address(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Address",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Any does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Address_dAddress(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Address_dAddress(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DAddress, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Address_dAddress(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Address",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Address_props(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Address_props(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Address().Props(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(any)
-	fc.Result = res
-	return ec.marshalNAny2interface(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Address_props(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Address",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Any does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Address_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Address_createdAt(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.CreatedAt, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(time.Time)
-	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Address_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Address",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Address_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Address_updatedAt(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.UpdatedAt, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(time.Time)
-	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Address_updatedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Address",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
 		},
 	}
 	return fc, nil
@@ -7786,188 +7194,6 @@ func (ec *executionContext) fieldContext_PaginationAction_data(_ context.Context
 				return ec.fieldContext_Action_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Action", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _PaginationAddress_total(ctx context.Context, field graphql.CollectedField, obj *model.PaginationAddress) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_PaginationAddress_total(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Total, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*int)
-	fc.Result = res
-	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_PaginationAddress_total(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "PaginationAddress",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _PaginationAddress_limit(ctx context.Context, field graphql.CollectedField, obj *model.PaginationAddress) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_PaginationAddress_limit(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Limit, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*int)
-	fc.Result = res
-	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_PaginationAddress_limit(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "PaginationAddress",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _PaginationAddress_skip(ctx context.Context, field graphql.CollectedField, obj *model.PaginationAddress) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_PaginationAddress_skip(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Skip, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*int)
-	fc.Result = res
-	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_PaginationAddress_skip(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "PaginationAddress",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _PaginationAddress_data(ctx context.Context, field graphql.CollectedField, obj *model.PaginationAddress) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_PaginationAddress_data(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Data, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.Address)
-	fc.Result = res
-	return ec.marshalOAddress2ᚕᚖgithubᚗcomᚋmikalai2006ᚋswaplandᚑapiᚋgraphᚋmodelᚐAddress(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_PaginationAddress_data(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "PaginationAddress",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Address_id(ctx, field)
-			case "userId":
-				return ec.fieldContext_Address_userId(ctx, field)
-			case "osmId":
-				return ec.fieldContext_Address_osmId(ctx, field)
-			case "address":
-				return ec.fieldContext_Address_address(ctx, field)
-			case "dAddress":
-				return ec.fieldContext_Address_dAddress(ctx, field)
-			case "props":
-				return ec.fieldContext_Address_props(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_Address_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Address_updatedAt(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Address", field.Name)
 		},
 	}
 	return fc, nil
@@ -10883,138 +10109,6 @@ func (ec *executionContext) fieldContext_Query_action(ctx context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_addresses(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_addresses(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Addresses(rctx, fc.Args["first"].(*int), fc.Args["after"].(*string), fc.Args["limit"].(*int), fc.Args["skip"].(*int), fc.Args["input"].(*model.FetchAddress))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.PaginationAddress)
-	fc.Result = res
-	return ec.marshalOPaginationAddress2ᚖgithubᚗcomᚋmikalai2006ᚋswaplandᚑapiᚋgraphᚋmodelᚐPaginationAddress(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_addresses(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "total":
-				return ec.fieldContext_PaginationAddress_total(ctx, field)
-			case "limit":
-				return ec.fieldContext_PaginationAddress_limit(ctx, field)
-			case "skip":
-				return ec.fieldContext_PaginationAddress_skip(ctx, field)
-			case "data":
-				return ec.fieldContext_PaginationAddress_data(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type PaginationAddress", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_addresses_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_address(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_address(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Address(rctx, fc.Args["id"].(*string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.Address)
-	fc.Result = res
-	return ec.marshalOAddress2ᚖgithubᚗcomᚋmikalai2006ᚋswaplandᚑapiᚋgraphᚋmodelᚐAddress(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_address(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Address_id(ctx, field)
-			case "userId":
-				return ec.fieldContext_Address_userId(ctx, field)
-			case "osmId":
-				return ec.fieldContext_Address_osmId(ctx, field)
-			case "address":
-				return ec.fieldContext_Address_address(ctx, field)
-			case "dAddress":
-				return ec.fieldContext_Address_dAddress(ctx, field)
-			case "props":
-				return ec.fieldContext_Address_props(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_Address_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Address_updatedAt(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Address", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_address_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Query_categories(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_categories(ctx, field)
 	if err != nil {
@@ -12979,9 +12073,9 @@ func (ec *executionContext) _Question_status(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Question_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18892,47 +17986,6 @@ func (ec *executionContext) unmarshalInputFetchAction(ctx context.Context, obj i
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputFetchAddress(ctx context.Context, obj interface{}) (model.FetchAddress, error) {
-	var it model.FetchAddress
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"id", "userId", "osmId"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "id":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-			data, err := ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ID = data
-		case "userId":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserID = data
-		case "osmId":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("osmId"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.OsmID = data
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputFetchCategory(ctx context.Context, obj interface{}) (model.FetchCategory, error) {
 	var it model.FetchCategory
 	asMap := map[string]interface{}{}
@@ -19743,173 +18796,6 @@ func (ec *executionContext) _Action(ctx context.Context, sel ast.SelectionSet, o
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
-var addressImplementors = []string{"Address"}
-
-func (ec *executionContext) _Address(ctx context.Context, sel ast.SelectionSet, obj *model.Address) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, addressImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("Address")
-		case "id":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Address_id(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "userId":
-			out.Values[i] = ec._Address_userId(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
-		case "osmId":
-			out.Values[i] = ec._Address_osmId(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
-		case "address":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Address_address(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "dAddress":
-			out.Values[i] = ec._Address_dAddress(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
-		case "props":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Address_props(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "createdAt":
-			out.Values[i] = ec._Address_createdAt(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
-		case "updatedAt":
-			out.Values[i] = ec._Address_updatedAt(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -21172,48 +20058,6 @@ func (ec *executionContext) _PaginationAction(ctx context.Context, sel ast.Selec
 	return out
 }
 
-var paginationAddressImplementors = []string{"PaginationAddress"}
-
-func (ec *executionContext) _PaginationAddress(ctx context.Context, sel ast.SelectionSet, obj *model.PaginationAddress) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, paginationAddressImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("PaginationAddress")
-		case "total":
-			out.Values[i] = ec._PaginationAddress_total(ctx, field, obj)
-		case "limit":
-			out.Values[i] = ec._PaginationAddress_limit(ctx, field, obj)
-		case "skip":
-			out.Values[i] = ec._PaginationAddress_skip(ctx, field, obj)
-		case "data":
-			out.Values[i] = ec._PaginationAddress_data(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
 var paginationCategoryImplementors = []string{"PaginationCategory"}
 
 func (ec *executionContext) _PaginationCategory(ctx context.Context, sel ast.SelectionSet, obj *model.PaginationCategory) graphql.Marshaler {
@@ -21962,44 +20806,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_action(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "addresses":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_addresses(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "address":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_address(ctx, field)
 				return res
 			}
 
@@ -24404,6 +23210,27 @@ func (ec *executionContext) marshalNInt2int64(ctx context.Context, sel ast.Selec
 	return res
 }
 
+func (ec *executionContext) unmarshalNInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+	res, err := graphql.UnmarshalInt(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	res := graphql.MarshalInt(*v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
 func (ec *executionContext) unmarshalNInt2ᚖint64(ctx context.Context, v interface{}) (*int64, error) {
 	res, err := graphql.UnmarshalInt64(v)
 	return &res, graphql.ErrorOnPath(ctx, err)
@@ -24854,54 +23681,6 @@ func (ec *executionContext) marshalOAction2ᚖgithubᚗcomᚋmikalai2006ᚋswapl
 	return ec._Action(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOAddress2ᚕᚖgithubᚗcomᚋmikalai2006ᚋswaplandᚑapiᚋgraphᚋmodelᚐAddress(ctx context.Context, sel ast.SelectionSet, v []*model.Address) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOAddress2ᚖgithubᚗcomᚋmikalai2006ᚋswaplandᚑapiᚋgraphᚋmodelᚐAddress(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
-func (ec *executionContext) marshalOAddress2ᚖgithubᚗcomᚋmikalai2006ᚋswaplandᚑapiᚋgraphᚋmodelᚐAddress(ctx context.Context, sel ast.SelectionSet, v *model.Address) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._Address(ctx, sel, v)
-}
-
 func (ec *executionContext) unmarshalOAny2interface(ctx context.Context, v interface{}) (any, error) {
 	if v == nil {
 		return nil, nil
@@ -24997,14 +23776,6 @@ func (ec *executionContext) unmarshalOFetchAction2ᚖgithubᚗcomᚋmikalai2006�
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputFetchAction(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalOFetchAddress2ᚖgithubᚗcomᚋmikalai2006ᚋswaplandᚑapiᚋgraphᚋmodelᚐFetchAddress(ctx context.Context, v interface{}) (*model.FetchAddress, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputFetchAddress(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -25551,13 +24322,6 @@ func (ec *executionContext) marshalOPaginationAction2ᚖgithubᚗcomᚋmikalai20
 		return graphql.Null
 	}
 	return ec._PaginationAction(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOPaginationAddress2ᚖgithubᚗcomᚋmikalai2006ᚋswaplandᚑapiᚋgraphᚋmodelᚐPaginationAddress(ctx context.Context, sel ast.SelectionSet, v *model.PaginationAddress) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._PaginationAddress(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOPaginationCategory2ᚖgithubᚗcomᚋmikalai2006ᚋswaplandᚑapiᚋgraphᚋmodelᚐPaginationCategory(ctx context.Context, sel ast.SelectionSet, v *model.PaginationCategory) graphql.Marshaler {

@@ -21,11 +21,12 @@ type Action interface {
 }
 
 type Address interface {
-	FindAddress(params domain.RequestParams) (domain.Response[domain.Address], error)
-	GetAllAddress(params domain.RequestParams) (domain.Response[domain.Address], error)
-	CreateAddress(userID string, address *domain.AddressInput) (*domain.Address, error)
+	CreateAddress(userID string, address domain.ResponseNominatim) (*model.Address, error)
+	FindAddress(input *model.AddressFilter) (domain.Response[model.Address], error)
+	// GetAllAddress(params domain.RequestParams) (domain.Response[domain.Address], error)
 	DeleteAddress(id string) (model.Address, error)
-	GqlGetAdresses(params domain.RequestParams) ([]*model.Address, error)
+	UpdateAddress(id string, userID string, data domain.ResponseNominatim) (*model.Address, error)
+	// GqlGetAdresses(params domain.RequestParams) ([]*model.Address, error)
 }
 
 type Authorization interface {
